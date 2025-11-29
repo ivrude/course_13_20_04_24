@@ -40,6 +40,7 @@ def list_categories_view(request):
     categories = Category.objects.all()
     return render(request, 'category/list_categories.html', {'categories': categories})
 
+
 def course_detail_view(request, course_id):
     course = Course.objects.get(id=course_id)
     return render(request, 'course/course_detail.html', {'course': course})

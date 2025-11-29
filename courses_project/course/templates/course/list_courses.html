@@ -3,7 +3,12 @@
 {% block content %}
 
 <div class="container px-4 px-lg-5 mt-5">
-    <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-2 row-cols-xl-3 justify-content-center">
+    <form class="d-flex" role="search">
+        <input class="form-control me-2" name="title" value="{{ request.GET.title }}" type="search"
+            placeholder="Search..." aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+    <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-2 row-cols-xl-3 mt-4 justify-content-center">
         {% for course in courses %}
         <div class="col mb-5">
             <div class="card h-100">

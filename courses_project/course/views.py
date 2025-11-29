@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import CourseForm, CategoryForm
 from .models import Course, Category
+from .filters import CourseFilter
 
 # Create your views here.
 
@@ -21,6 +22,8 @@ def add_course_view(request):
 
 def list_courses_view(request):
     courses = Course.objects.all()
+    course_filter = CourseFilter(request.GET, queryset=courses)
+    courses = course_filter.qs
     return render(request, 'course/list_courses.html', {'courses': courses})
 
 

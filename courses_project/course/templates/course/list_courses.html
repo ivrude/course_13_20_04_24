@@ -23,6 +23,13 @@
                         <h5 class="fw-bolder">{{course.title}}</h5>
                         <!-- Product description-->
                         {{course.description}}
+                        <!-- Product description-->
+                       <h5>
+                        {% for _ in "x"|ljust:course.rate %}
+                           ⭐
+                        {% endfor %}
+                       </h5>
+
                         <!-- Product price-->
                         <h5 class="d-flex justify-content-center small text-primary mb-2">{{course.price}} $</h5>
                     </div>

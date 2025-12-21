@@ -3,9 +3,11 @@
 {% block content %}
 <div class="container mx-5">
     <h1>User Profile</h1>
+    <img src="{{ request.COOKIES.user_picture }}" alt="avatar">
     <p><strong>Full Name:</strong> {{ user.full_name }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
     <p><strong>Phone Number:</strong> {{ user.phone_number }}</p>
     <a class="btn btn-outline-primary mt-auto" href="{% url 'auth:edit_profile' %}">Edit</a>
+    <a class="btn btn-outline-primary mt-auto" href="{% url 'auth:password_change' %}">Change Password</a>
 </div>
 {% endblock %}

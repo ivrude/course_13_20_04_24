@@ -11,6 +11,7 @@
             {{ form }}
             <button type="submit" class="btn btn-primary w-100 mt-3 mb-5">Register</button>
         </form>
+        <a href="{% url 'auth:google_login' %}">Реєстрація через Google</a>
 
         <p>
             Already have an account? <a href="{% url 'auth:login' %}">Login here</a>

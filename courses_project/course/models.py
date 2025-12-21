@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxLengthValidator
+from django.core.validators import MinValueValidator, MaxLengthValidator, MaxValueValidator
 from user.models import CustomUser
 
 # Create your models here.
@@ -25,6 +25,7 @@ class Course(models.Model):
     duration = models.DecimalField(max_digits=4, decimal_places=1, validators=[MinValueValidator(0)])
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='courses')
     teacher = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='courses')
+    rate = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(10)])
 
     def __str__(self):
         return self.title

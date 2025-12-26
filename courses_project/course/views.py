@@ -1,7 +1,8 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import CourseForm, CategoryForm
-from .models import Course, Category
+from .models import Course, Category, Bucket
 from .filters import CourseFilter
 
 # Create your views here.
@@ -47,3 +48,20 @@ def list_categories_view(request):
 def course_detail_view(request, course_id):
     course = Course.objects.get(id=course_id)
     return render(request, 'course/course_detail.html', {'course': course})
+
+@login_required
+def add_to_busket(request, course_id):
+    course = Course.objects.get(id=course_id)
+    Bucket.objects.create(course=course, user=request.user)
+    messages.success(request, "Курс додано в корзину 🛒")
+    return redirect("course:list_courses")
+
+@login_required
+def bucket_view(request):
+    courses = Bucket.objects.filter(user=request.user).select_related("course")
+    return render(request, 'course/bucket.html', {'courses': courses})
+
+@login_required
+def delete_bucket(request, course_id):
+    Bucket.objects.filter(course_id=course_id, user=request.user).delete()
+    return redirect('bucket')

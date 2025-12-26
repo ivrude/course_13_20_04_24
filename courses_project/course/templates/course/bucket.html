@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Ваша корзина 🛒</h2>
+
+{% if courses %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Назви курсів</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in courses %}
+                <tr>
+                      <td>{{ item.course.title }}</td>
+                      <td>{{ item.course.price }} $</td>
+                      <td>
+                        <a href="delete/{{item.course.id}}"
+                        class="btn btn-danger btn-sm">
+                        ❌ Видалити
+                        </a>
+                      </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Корзина порожня</p>
+{% endif %}
+{% endblock %}

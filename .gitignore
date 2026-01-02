@@ -2,3 +2,4 @@
 /.venv
 /test
 /courses_project/db.sqlite3
+/courses_project/courses_project/secret.py

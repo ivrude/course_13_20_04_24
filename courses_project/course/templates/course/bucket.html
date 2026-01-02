@@ -4,29 +4,57 @@
 <h2>Ваша корзина 🛒</h2>
 
 {% if courses %}
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Назви курсів</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in courses %}
-                <tr>
-                      <td>{{ item.course.title }}</td>
-                      <td>{{ item.course.price }} $</td>
-                      <td>
-                        <a href="delete/{{item.course.id}}"
-                        class="btn btn-danger btn-sm">
-                        ❌ Видалити
-                        </a>
-                      </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Курс</th>
+            <th>Ціна</th>
+            <th>Дії</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in courses %}
+
+        <tr
+            {% if item.status == "W" %}
+                class="table-warning"
+            {% elif item.status == "B" %}
+                class="table-success"
+            {% endif %}
+        >
+            <td>{{ item.course.title }}</td>
+            <td>{{ item.course.price }} $</td>
+
+            <td>
+                {% if item.status == "N" %}
+                    <a href="delete/{{ item.course.id }}"
+                       class="btn btn-danger btn-sm">
+                       ❌ Видалити
+                    </a>
+
+                    <a href="buy/{{ item.course.id }}"
+                       class="btn btn-success btn-sm">
+                       💳 Купити
+                    </a>
+
+                {% elif item.status == "W" %}
+                    <span class="badge bg-warning text-dark">
+                        ⏳ Очікує оплату
+                    </span>
+
+                {% elif item.status == "B" %}
+                    <span class="badge bg-success">
+                        ✅ Куплено
+                    </span>
+                {% endif %}
+            </td>
+        </tr>
+
+        {% endfor %}
+    </tbody>
+</table>
 {% else %}
-    <p>Корзина порожня</p>
+<p>Корзина порожня</p>
 {% endif %}
+
 {% endblock %}

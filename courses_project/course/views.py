@@ -1,9 +1,13 @@
+from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import CourseForm, CategoryForm
 from .models import Course, Category, Bucket
 from .filters import CourseFilter
+from django.core.mail import send_mail
+
+
 
 # Create your views here.
 
@@ -19,6 +23,7 @@ def add_course_view(request):
     else:
         form = CourseForm()
     return render(request, 'course/add_course.html', {'form': form})
+
 
 
 def list_courses_view(request):
@@ -53,6 +58,16 @@ def course_detail_view(request, course_id):
 def add_to_busket(request, course_id):
     course = Course.objects.get(id=course_id)
     Bucket.objects.create(course=course, user=request.user)
+    from_email = settings.EMAIL_HOST_USER
+    message = f'Ви додали курс {course.title} в корзину'
+    to_email = request.user.email
+    send_mail(
+        "Курс додано в корзину",
+        message,
+        from_email,
+        [to_email],
+        fail_silently=False,
+    )
     messages.success(request, "Курс додано в корзину 🛒")
     return redirect("course:list_courses")
 
@@ -64,4 +79,21 @@ def bucket_view(request):
 @login_required
 def delete_bucket(request, course_id):
     Bucket.objects.filter(course_id=course_id, user=request.user).delete()
-    return redirect('bucket')
+    return redirect('course:bucket')
+
+@login_required
+def buy_course(request, course_id):
+    course = Course.objects.get(id=course_id)
+    Bucket.objects.filter(course_id=course_id, user=request.user).update(status="W")
+    from_email = settings.EMAIL_HOST_USER
+    message = (f'Ваша квитанція на оплату {course.title} на суму {course.price}. Просимо оплатити за наступними'
+               f'credetinals ..... та надіслати квитанцію на пошту {from_email}')
+    to_email = request.user.email
+    send_mail(
+        "Квитанція на оплату",
+        message,
+        from_email,
+        [to_email],
+        fail_silently=False,
+    )
+    return redirect('course:bucket')

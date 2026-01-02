@@ -30,11 +30,16 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
+class Status_bin(models.TextChoices):
+    Not = 'N', 'Not_bought'
+    Bought = 'B', 'Bought'
+    Waiting = 'W', 'Waiting'
+
 
 class Bucket(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='buckets')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='users')
-    status = models.BooleanField(default=False)
+    status = models.CharField(choices=Status_bin.choices, default=Status_bin.Not,)
 
     def __str__(self):
         return self.course.title

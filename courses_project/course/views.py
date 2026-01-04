@@ -1,11 +1,18 @@
 from django.conf import settings
 from django.contrib import messages
+from django.core.cache import cache
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+
+
 from .forms import CourseForm, CategoryForm
 from .models import Course, Category, Bucket
 from .filters import CourseFilter
 from django.core.mail import send_mail
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -27,9 +34,17 @@ def add_course_view(request):
 
 
 def list_courses_view(request):
-    courses = Course.objects.all()
-    course_filter = CourseFilter(request.GET, queryset=courses)
-    courses = course_filter.qs
+    cache_key = "courses_list"
+    courses = cache.get(cache_key)
+
+    if not courses:
+        logger.warning("Дані з БД")
+        qs = Course.objects.all()
+        course_filter = CourseFilter(request.GET, queryset=qs)
+        courses = list(course_filter.qs)
+        cache.set(cache_key, courses, timeout=300)
+    else:
+        logger.warning("Дані з Cache")
     return render(request, 'course/list_courses.html', {'courses': courses})
 
 

@@ -9,6 +9,7 @@
         <tr>
             <th>Курс</th>
             <th>Ціна</th>
+            <th>Кількість</th>
             <th>Дії</th>
         </tr>
     </thead>
@@ -24,6 +25,16 @@
         >
             <td>{{ item.course.title }}</td>
             <td>{{ item.course.price }} $</td>
+            <td class="text-center">
+                {% if item.status == "N" %}
+                    <a href="dec/{{item.course.id}}" class="btn btn-sm btn-outline-secondary">−</a>
+                {% endif %}
+
+                <strong class="mx-2">{{ item.count }}</strong>
+                {% if item.status == "N" %}
+                    <a href="inc/{{item.course.id}}" class="btn btn-sm btn-outline-secondary">+</a>
+                {% endif %}
+            </td>
 
             <td>
                 {% if item.status == "N" %}

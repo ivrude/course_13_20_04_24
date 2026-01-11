@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib import messages
 from django.core.cache import cache
+from django.http import HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
@@ -48,8 +49,10 @@ def list_courses_view(request):
     return render(request, 'course/list_courses.html', {'courses': courses})
 
 
-@login_required
+
 def add_category_view(request):
+    if not request.user.is_staff:
+        return HttpResponseNotFound("⛔ Доступ заборонено", )
     if request.method == "POST":
         form = CategoryForm(request.POST)
         if form.is_valid():
@@ -72,7 +75,10 @@ def course_detail_view(request, course_id):
 @login_required
 def add_to_busket(request, course_id):
     course = Course.objects.get(id=course_id)
-    Bucket.objects.create(course=course, user=request.user)
+    bucket, created = Bucket.objects.get_or_create(course=course, user=request.user)
+    if not created:
+        bucket.count += 1
+        bucket.save()
     from_email = settings.EMAIL_HOST_USER
     message = f'Ви додали курс {course.title} в корзину'
     to_email = request.user.email
@@ -99,9 +105,10 @@ def delete_bucket(request, course_id):
 @login_required
 def buy_course(request, course_id):
     course = Course.objects.get(id=course_id)
+    bucket = Bucket.objects.get(course_id=course_id, user=request.user)
     Bucket.objects.filter(course_id=course_id, user=request.user).update(status="W")
     from_email = settings.EMAIL_HOST_USER
-    message = (f'Ваша квитанція на оплату {course.title} на суму {course.price}. Просимо оплатити за наступними'
+    message = (f'Ваша квитанція на оплату {course.title} у кількості {bucket.count} товару на суму {course.price * bucket.count}. Просимо оплатити за наступними'
                f'credetinals ..... та надіслати квитанцію на пошту {from_email}')
     to_email = request.user.email
     send_mail(
@@ -111,4 +118,23 @@ def buy_course(request, course_id):
         [to_email],
         fail_silently=False,
     )
+    return redirect('course:bucket')
+
+@login_required
+def bucket_inc(request, course_id):
+    bucket = Bucket.objects.get(course_id=course_id, user=request.user)
+    count = bucket.count + 1
+    bucket._do_update(count)
+    from_email = settings.EMAIL_HOST_USER
+    Bucket.objects.filter(course_id=course_id, user=request.user).update(count=count)
+    return redirect('course:bucket')
+
+@login_required
+def bucker_dec(request, course_id):
+    bucket = Bucket.objects.get(course_id=course_id, user=request.user)
+    count = bucket.count - 1
+    if count > 0:
+        Bucket.objects.filter(course_id=course_id, user=request.user).update(count=count)
+    else:
+        Bucket.objects.filter(course_id=course_id, user=request.user).delete()
     return redirect('course:bucket')

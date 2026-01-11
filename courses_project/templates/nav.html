@@ -25,7 +25,9 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{% url 'course:add_course' %}">Add a course</a></li>
+                        {% if request.user.is_staff %}
                         <li><a class="dropdown-item" href="{% url 'course:add_category' %}">Add a category</a></li>
+                        {% endif %}
                         <li>
                             <hr class="dropdown-divider">
                         </li>

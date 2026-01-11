@@ -40,6 +40,7 @@ class Bucket(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='buckets')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='users')
     status = models.CharField(choices=Status_bin.choices, default=Status_bin.Not,)
+    count = models.IntegerField(default=1, validators=[MinValueValidator(0)])
 
     def __str__(self):
         return self.course.title

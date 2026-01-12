@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'django_filters',
     'course',
     'user',
+    'captcha',
+    #'admin_honeypot',
 ]
 
 MIDDLEWARE = [
@@ -161,5 +163,23 @@ CACHES = {
 }
 
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
 
+    "handlers": {
+        "db": {
+            "level": "INFO",
+            "class": "course.logging_handlers.DBLogHandler",
+        },
+    },
+
+    "loggers": {
+        "cache": {
+            "handlers": ["db"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
 

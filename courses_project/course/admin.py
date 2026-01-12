@@ -1,8 +1,7 @@
 from django.contrib import admin
 
 
-from .models import Course, Bucket
-
+from .models import Course, Bucket, SystemLog, EmailLog
 
 
 @admin.register(Course)
@@ -30,3 +29,25 @@ class BucketAdmin(admin.ModelAdmin):
     list_editable = ("status",)
     ordering = ("id",)
 
+@admin.register(SystemLog)
+class SystemLogAdmin(admin.ModelAdmin):
+    list_display = ("created_at", "level", "message")
+    list_filter = ("level", "created_at")
+    search_fields = ("message",)
+    ordering = ("-created_at",)
+
+    readonly_fields = ("created_at", "level", "message")
+
+
+@admin.register(EmailLog)
+class EmailLogAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "to_email",
+        "subject",
+    )
+    list_filter = ("to_email",)
+    readonly_fields = (
+        "to_email",
+        "subject",
+    )

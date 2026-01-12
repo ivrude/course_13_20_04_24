@@ -1,3 +1,4 @@
+from captcha.fields import CaptchaField
 from django.conf import settings
 from django.contrib import messages
 from django.core.cache import cache
@@ -7,13 +8,13 @@ from django.contrib.auth.decorators import login_required
 
 
 from .forms import CourseForm, CategoryForm
-from .models import Course, Category, Bucket
+from .models import Course, Category, Bucket, EmailLog
 from .filters import CourseFilter
 from django.core.mail import send_mail
 import logging
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("cache")
 
 
 
@@ -79,16 +80,6 @@ def add_to_busket(request, course_id):
     if not created:
         bucket.count += 1
         bucket.save()
-    from_email = settings.EMAIL_HOST_USER
-    message = f'Ви додали курс {course.title} в корзину'
-    to_email = request.user.email
-    send_mail(
-        "Курс додано в корзину",
-        message,
-        from_email,
-        [to_email],
-        fail_silently=False,
-    )
     messages.success(request, "Курс додано в корзину 🛒")
     return redirect("course:list_courses")
 
@@ -118,14 +109,17 @@ def buy_course(request, course_id):
         [to_email],
         fail_silently=False,
     )
+    EmailLog.objects.create(
+        subject="Квитанція на оплату",
+        to_email=to_email,
+    )
+
     return redirect('course:bucket')
 
 @login_required
 def bucket_inc(request, course_id):
     bucket = Bucket.objects.get(course_id=course_id, user=request.user)
     count = bucket.count + 1
-    bucket._do_update(count)
-    from_email = settings.EMAIL_HOST_USER
     Bucket.objects.filter(course_id=course_id, user=request.user).update(count=count)
     return redirect('course:bucket')
 

@@ -1,7 +1,7 @@
 from django.urls import path, reverse_lazy, reverse
 from django.contrib.auth.views import  LogoutView, PasswordChangeDoneView, PasswordChangeView
 from .custom_clases import CustomLoginView
-from .views import register_view, profile_view, edit_profile_view, google_login, login_from_fastapi
+from .views import register_view, profile_view, edit_profile_view
 
 app_name = 'auth'
 
@@ -10,8 +10,6 @@ urlpatterns = [
     path("login/", CustomLoginView.as_view(template_name="users/login.html"), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("profile/", profile_view, name="profile"),
-    path("login/google/", google_login, name="google_login"),
-    path("login/from_fastapi/", login_from_fastapi, name="login_from_fastapi"),
     path("profile/edit/", edit_profile_view, name="edit_profile"),
     path("password/change/",PasswordChangeView.as_view(
             template_name="users/password_change.html",

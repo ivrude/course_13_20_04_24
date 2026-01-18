@@ -24,4 +24,5 @@ urlpatterns = [
     path('courses/', include('course.urls'), name='course'),
     path("auth/", include('user.urls', namespace="auth")),
     path("captcha/", include("captcha.urls")),
+    path("api/", include("course.api_urls")),
 ]

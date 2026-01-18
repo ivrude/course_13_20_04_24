@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'course',
     'user',
     'captcha',
+    'rest_framework'
     #'admin_honeypot',
 ]
 
@@ -183,3 +184,8 @@ LOGGING = {
     },
 }
 
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+    ],
+}

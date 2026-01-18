@@ -20,7 +20,8 @@ class CourseSerializer(serializers.ModelSerializer):
         ]
 
 class BucketSerializer(serializers.ModelSerializer):
+    course = serializers.SlugRelatedField(slug_field="description", read_only=True)
+    user = serializers.SlugRelatedField(slug_field="email", read_only=True)
     class Meta:
         model = Bucket
-        user = serializers.CharField(source="user.full_name", read_only=True)
-        fields = ["id", "course", "count", "status", "user"]
+        fields = ["id", "count", "status", "user", "course"]

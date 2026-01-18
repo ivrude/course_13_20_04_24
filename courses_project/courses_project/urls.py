@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from course.api_views import api_ninga
 
 urlpatterns = [
     #path("admin/", include("admin_honeypot.urls", namespace="admin_honeypot")),
@@ -25,4 +26,5 @@ urlpatterns = [
     path("auth/", include('user.urls', namespace="auth")),
     path("captcha/", include("captcha.urls")),
     path("api/", include("course.api_urls")),
+    path("api_ninja/", api_ninga.urls),
 ]

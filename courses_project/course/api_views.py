@@ -1,17 +1,23 @@
 from django.contrib.auth import login
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from ninja import NinjaAPI
+from ninja.security import django_auth
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Course, Bucket
+from .models import Course, Bucket, Category
 from .serializer import CourseSerializer, BucketSerializer
 from courses_project.secret import oauth
 
 
 from user.models import CustomUser
 
+from .shemas import CourseOut, CourseIn
+
+api_ninga =NinjaAPI()
 
 class CourseListAPI(generics.ListAPIView):
     queryset = Course.objects.all()
@@ -71,3 +77,49 @@ class GoogleCallbackView(APIView):
 
         return response
 
+
+@api_ninga.get("/", response=list[CourseOut])
+def list_courses(request):
+    return Course.objects.all()
+
+
+@api_ninga.get("/{course_id}", response=CourseOut)
+def get_course(request, course_id: int):
+    return get_object_or_404(Course, id=course_id)
+
+
+@api_ninga.post("/", response=CourseOut, auth=django_auth)
+def create_course(request, data: CourseIn):
+    category = get_object_or_404(Category, id=data.category_id)
+
+    course = Course.objects.create(
+        title=data.title,
+        description=data.description,
+        price=data.price,
+        duration=data.duration,
+        rate=data.rate,
+        category=category,
+        teacher=request.user,
+    )
+    return course
+
+
+@api_ninga.put("/{course_id}", response=CourseOut, auth=django_auth)
+@csrf_exempt
+def update_course(request, course_id: int, data: CourseIn):
+    course = get_object_or_404(Course, id=course_id)
+
+    for field, value in data.dict().items():
+        if field != "category_id":
+            setattr(course, field, value)
+
+    course.save()
+    return course
+
+
+@api_ninga.delete("/{course_id}", auth=django_auth)
+@csrf_exempt
+def delete_course(request, course_id: int):
+    course = get_object_or_404(Course, id=course_id)
+    course.delete()
+    return {"success": True}

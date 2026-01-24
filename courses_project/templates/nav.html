@@ -37,7 +37,13 @@
                 <!-- <li class="nav-item">
                     <a class="nav-link disabled" aria-disabled="true">Disabled</a>
                 </li> -->
+
             </ul>
+
+           <div class="tdnn ms-auto me-3">
+               <div class="moon"></div>
+           </div>
+
             {% if request.user.is_authenticated %}
             <form class="d-flex" method="post" action="{% url 'auth:logout' %}">
                 {% csrf_token %}
@@ -48,6 +54,7 @@
             <a class="btn btn-outline-primary me-2" href="{% url 'auth:login' %}">Login</a>
             <a class="btn btn-primary" href="{% url 'auth:register' %}">Sign-up</a>
             {% endif %}
+
         </div>
     </div>
 </nav>

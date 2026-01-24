@@ -89,6 +89,7 @@ def get_course(request, course_id: int):
 
 
 @api_ninga.post("/", response=CourseOut, auth=django_auth)
+@csrf_exempt
 def create_course(request, data: CourseIn):
     category = get_object_or_404(Category, id=data.category_id)
 

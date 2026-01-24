@@ -126,7 +126,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -139,7 +144,7 @@ LOGIN_REDIRECT_URL = 'course:list_courses'
 LOGIN_URL = 'auth:login'
 LOGOUT_REDIRECT_URL = 'auth:login'
 
-SESSION_COOKIE_AGE = 480
+SESSION_COOKIE_AGE = 5000
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 SESSION_COOKIE_SAMESITE = "Lax"

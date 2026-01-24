@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="container px-4 px-lg-5 mt-5">
+<div class="container px-4 px-lg-5 mt-5 fade-in">
     <form class="d-flex" role="search">
         <input class="form-control me-2" name="title" value="{{ request.GET.title }}" type="search"
             placeholder="Search..." aria-label="Search">
@@ -10,8 +10,8 @@
     </form>
     <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-2 row-cols-xl-3 mt-4 justify-content-center">
         {% for course in courses %}
-        <div class="col mb-5">
-            <div class="card h-100">
+        <div class="col mb-5 fade-in">
+            <div class="card h-100 fade-in">
                 <!-- Product image-->
                 <img class="card-img-top" src="{{course.image_url}}" alt="image for {{course.title}}" />
                 <!-- Product details-->
@@ -40,7 +40,7 @@
                         <a class="btn btn-outline-primary mt-auto" href="{{course.id}}">More</a>
                     </div>
                     <div class="text-center">
-                        <a class="btn btn-outline-primary mt-auto" href="add_to_busket/{{course.id}}">Записатись </a>
+                        <a class="btn btn-outline-primary mt-auto js-loading" href="add_to_busket/{{course.id}}">Записатись </a>
                     </div>
                 </div>
             </div>

@@ -1,3 +1,6 @@
+#File whith admin model registration
+
+
 from django.contrib import admin
 
 

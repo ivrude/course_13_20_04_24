@@ -1,3 +1,5 @@
+import uuid
+
 from captcha.fields import CaptchaField
 from django.conf import settings
 from django.contrib import messages
@@ -8,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 
 
 from .forms import CourseForm, CategoryForm
+from .liqpay import generate_liqpay_data
 from .models import Course, Category, Bucket, EmailLog
 from .filters import CourseFilter
 from django.core.mail import send_mail
@@ -95,9 +98,10 @@ def delete_bucket(request, course_id):
 
 @login_required
 def buy_course(request, course_id):
+    order_id = str(uuid.uuid4())
     course = Course.objects.get(id=course_id)
+    Bucket.objects.filter(course_id=course_id, user=request.user).update(status="W", order_id=order_id)
     bucket = Bucket.objects.get(course_id=course_id, user=request.user)
-    Bucket.objects.filter(course_id=course_id, user=request.user).update(status="W")
     from_email = settings.EMAIL_HOST_USER
     message = (f'Ваша квитанція на оплату {course.title} у кількості {bucket.count} товару на суму {course.price * bucket.count}. Просимо оплатити за наступними'
                f'credetinals ..... та надіслати квитанцію на пошту {from_email}')
@@ -113,8 +117,13 @@ def buy_course(request, course_id):
         subject="Квитанція на оплату",
         to_email=to_email,
     )
+    data, signature = generate_liqpay_data(bucket, request.user)
 
-    return redirect('course:bucket')
+    return render(request, "course/payment.html", {
+        "data": data,
+        "signature": signature,
+    })
+
 
 @login_required
 def bucket_inc(request, course_id):
@@ -132,3 +141,5 @@ def bucker_dec(request, course_id):
     else:
         Bucket.objects.filter(course_id=course_id, user=request.user).delete()
     return redirect('course:bucket')
+
+

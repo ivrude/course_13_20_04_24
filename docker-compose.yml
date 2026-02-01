@@ -19,3 +19,4 @@ services:
     container_name: redis_container
     ports:
       - "6379:6379"
+    restart: always

@@ -1,4 +1,6 @@
 from django.urls import path
+
+#from .liqpay import liqpay_callback
 from .views import add_course_view, list_courses_view, add_category_view, list_categories_view, course_detail_view, \
     add_to_busket, bucket_view, delete_bucket, buy_course, bucket_inc, bucker_dec
 
@@ -16,4 +18,6 @@ urlpatterns = [
     path("bucket/buy/<int:course_id>/", buy_course, name="buy_course"),
     path('bucket/inc/<int:course_id>/', bucket_inc, name='bucket_inc'),
     path('bucket/dec/<int:course_id>/', bucker_dec, name='bucket_dec'),
+#   path("payment/callback/", liqpay_callback, name="liqpay_callback"),
+
 ]

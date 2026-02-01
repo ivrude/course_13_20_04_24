@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxLengthValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxLengthValidator, MaxValueValidator, MinLengthValidator
 from user.models import CustomUser
 
 # Create your models here.
@@ -35,11 +35,18 @@ class Status_bin(models.TextChoices):
     Bought = 'B', 'Bought'
     Waiting = 'W', 'Waiting'
 
+class Status_payment(models.TextChoices):
+    Pending = 'P', 'Pending'
+    Successful = 'S', 'Successful'
+    Failed = 'F', 'Failed'
+
 
 class Bucket(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='buckets')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='users')
     status = models.CharField(choices=Status_bin.choices, default=Status_bin.Not,)
+    order_id = models.CharField(max_length=20)
+    payment_status = models.CharField(choices=Status_payment.choices, default=Status_payment.Pending)
     count = models.IntegerField(default=1, validators=[MinValueValidator(0)])
 
     def __str__(self):

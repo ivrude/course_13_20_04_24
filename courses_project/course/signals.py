@@ -5,6 +5,10 @@ from django.dispatch import receiver
 from .models import Course, Bucket, EmailLog
 from django.conf import settings
 
+
+from user.models import CustomUser, Notification
+
+
 @receiver(post_save, sender=Course)
 def invalidate_courses_cache(sender, **kwargs):
     cache.delete("courses_list")
@@ -26,4 +30,10 @@ def bucket_add_signal(sender, instance, created, **kwargs):
             subject="Курс додано в корзину",
             to_email=to_email,
         )
-
+@receiver(post_save, sender=CustomUser)
+def user_updated_notification(sender, instance, created, **kwargs):
+    if not created:  # тільки при оновленні
+        Notification.objects.create(
+            user=instance,
+            message="Ваші дані були оновлені ✅"
+        )

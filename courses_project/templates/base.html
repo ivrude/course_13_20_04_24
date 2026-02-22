@@ -28,7 +28,19 @@
         {% endfor %}
     </div>
     {% endif %}
+    <div class="notifications">
+        {% if notifications_count > 0 %}
+            <div class="badge">
+                🔔 {{ notifications_count }}
+            </div>
 
+            {% for notification in global_notifications %}
+                <div class="alert alert-info">
+                    {{ notification.message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
     
     <div class="container mt-4">
         {% block content %}

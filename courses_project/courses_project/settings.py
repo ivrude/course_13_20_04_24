@@ -30,7 +30,11 @@ SECRET_KEY = "Secret"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "10.112.78.231",
+    "192.168.0.188",
+    "127.0.0.1"
+]
 
 
 # Application definition
@@ -73,6 +77,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'user.context_processor.notifications_processor',
             ],
         },
     },
@@ -161,13 +166,16 @@ EMAIL_USE_TLS = True
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis:6379/1",
+        "LOCATION": "redis://localhost:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
 }
 
+
+LIQPAY_API = "sandbox_i93338672575"
+LIQPAY_API_SECRET = "sandbox_h8iizJZMrm6TeQYw235D7qmEzORqtwDQq0IvabHa"
 
 LOGGING = {
     "version": 1,
@@ -194,3 +202,5 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ],
 }
+
+#BASE_URL = "https://abc123.ngrok-free.app"
